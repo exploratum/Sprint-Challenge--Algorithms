@@ -96,9 +96,109 @@ class SortingRobot:
         """
         Sort the robot's list.
         """
-        # Fill this out
-        pass
 
+        #return obvious cases
+        if len(self._list) == 0 or len(self._list) == 1:
+            return self._list
+
+        #################### Optimization - Stretch #########################################
+        #    Check and resolve case where list is  reverse sorted     #
+        #   Rotate all items (circular) untils all items are sorted - return the list
+        #
+        #   side effects if items are not reverse sorted:    
+        #   worst case: 2nd card is greater than first card-> no change in list
+        #   average case: partially reverse sorted at the beginning-> will get closer to a sorted list
+        #   in both case Bubble sort will take over next, possibly starting from a better sorted list
+        
+        #################### Optimization ####################################################
+        
+        #light on: Will assume that list is reverse sorted from here
+        self.set_light_on()
+
+        while(self.light_is_on()):
+
+            while self.can_move_right():
+                self.swap_item()
+                self.move_right()
+
+                #This is the last swap
+                if not self.can_move_right():
+                
+                    #2 last items were not reverse sorted = keep that order
+                    if(self.compare_item() == -1):
+                        self.move_left()
+                        self.swap_item()
+
+                    #sort last two items  
+                    else:
+                        self.swap_item()
+                        self.move_left()
+                        self.swap_item()
+                    
+                    return self._list
+
+                #signals a situation where this is not reverse sorted - exit loop
+                if(self.compare_item() == -1):
+
+                    #will stop the optimization phase
+                    self.set_light_off()
+                    break
+                else:
+                    self.swap_item()
+
+            
+            #return item on hand to an empty spot to the left
+            #case1: have reached the end of the list - rotating last element to beginning of the pass   
+            #case2: Met case where not reverse sorted - return item on hand right to the left where it came from
+            while True:
+                self.move_left()
+                if self.compare_item() == None:
+                    self.swap_item()
+                    break
+
+                    
+        ################################################################################
+        #          End of Optimization Code - Start Bubble sort next                   #
+        ################################################################################
+
+        self.set_light_on()
+
+        #light on: While there were swaps in the previous pass
+        while(self.light_is_on()):
+
+            
+            #start with signaling that we have not done any swaps yet for this coming pass
+            self.set_light_off()
+
+            #if at end of list move back to beginning
+            while(self.can_move_left()):
+                self.move_left()
+
+            #while not at end of list move right
+            while(self.can_move_right()):
+
+                #grab current card
+                self.swap_item()
+
+                #move right
+                self.move_right()
+
+                #swap if card on hand is greater than card in the front
+                if(self.compare_item() == 1):
+                    self.swap_item()
+
+                    #signals swaps have occurred
+                    self.set_light_on()
+
+                #move back left
+                self.move_left()
+
+                #place at this location the card that was there previously or card that was swapped on the right
+                self.swap_item()
+
+                self.move_right()
+
+        return self._list
 
 if __name__ == "__main__":
     # Test our your implementation from the command line
