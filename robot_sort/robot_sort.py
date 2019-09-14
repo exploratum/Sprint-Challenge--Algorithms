@@ -101,16 +101,16 @@ class SortingRobot:
         if len(self._list) == 0 or len(self._list) == 1:
             return self._list
 
-        #################### Optimization - Stretch #########################################
+        # ################### Optimization - Stretch #########################################
         #    Check and resolve case where list is  reverse sorted     #
         #   Rotate all items (circular) untils all items are sorted - return the list
-        #
+        
         #   side effects if items are not reverse sorted:    
         #   worst case: 2nd card is greater than first card-> no change in list
         #   average case: partially reverse sorted at the beginning-> will get closer to a sorted list
         #   in both case Bubble sort will take over next, possibly starting from a better sorted list
         
-        #################### Optimization ####################################################
+        ################### Optimization ####################################################
         
         #light on: Will assume that list is reverse sorted from here
         self.set_light_on()
@@ -121,21 +121,22 @@ class SortingRobot:
                 self.swap_item()
                 self.move_right()
 
-                #This is the last swap
-                if not self.can_move_right():
+                ################ To Fix - return list after reversing the reverse order ############
+                # #This is the last swap
+                # if not self.can_move_right():
                 
-                    #2 last items were not reverse sorted = keep that order
-                    if(self.compare_item() == -1):
-                        self.move_left()
-                        self.swap_item()
+                #     #2 last items were not reverse sorted = keep that order
+                #     if(self.compare_item() == -1):
+                #         self.move_left()
+                #         self.swap_item()
 
-                    #sort last two items  
-                    else:
-                        self.swap_item()
-                        self.move_left()
-                        self.swap_item()
+                #     #sort last two items  
+                #     else:
+                #         self.swap_item()
+                #         self.move_left()
+                #         self.swap_item()
                     
-                    return self._list
+                #     return self._list
 
                 #signals a situation where this is not reverse sorted - exit loop
                 if(self.compare_item() == -1):
